@@ -135,91 +135,75 @@ if _G.FastAttack then
         ClickDelay = 0
     }
 
-    local Module = {}
+   local client = game.Players.LocalPlayer
+local Enemies = workspace:WaitForChild("Enemies")
+local Modules = game.ReplicatedStorage:WaitForChild("Modules")
 
-    Module.FastAttack = (function()
-        if _ENV.rz_FastAttack then
-            return _ENV.rz_FastAttack
+FastAttack = (function()
+
+    local net = Modules:WaitForChild("Net")
+    local RegisterAttack = net:WaitForChild("RE/RegisterAttack")
+    local RegisterHit = net:WaitForChild("RE/RegisterHit")
+
+    local HIT_FUNCTION
+
+    local AttackModule = {
+        Distance = 100,
+    }
+
+    local u147 = client.Character
+        and client.Character:FindFirstChildOfClass("Tool")
+
+    function AttackModule:InitHitFunction()
+        local PlayerScripts = client:WaitForChild("PlayerScripts")
+        local LocalScript = PlayerScripts:FindFirstChildOfClass("LocalScript")
+
+        while not LocalScript do
+            client.PlayerScripts.ChildAdded:Wait()
+            LocalScript = PlayerScripts:FindFirstChildOfClass("LocalScript")
         end
 
-        local FastAttack = {
-            Distance = 100,
-            attackMobs = true,
-            attackPlayers = true,
-            Equipped = nil
-        }
-
-        local RegisterAttack = SafeWaitForChild(Net, "RE/RegisterAttack")
-        local RegisterHit = SafeWaitForChild(Net, "RE/RegisterHit")
-
-        local function IsAlive(character)
-            return character and character:FindFirstChild("Humanoid") and character.Humanoid.Health > 0
+        local Success, ScriptEnv = pcall(getsenv, LocalScript)
+        if Success and ScriptEnv then
+            HIT_FUNCTION = ScriptEnv._G.SendHitsToServer
         end
+    end
 
-        local function ProcessEnemies(OthersEnemies, Folder)
-            local BasePart = nil
-            for _, Enemy in Folder:GetChildren() do
-                local Head = Enemy:FindFirstChild("Head")
-                if Head and IsAlive(Enemy) and Player:DistanceFromCharacter(Head.Position) < FastAttack.Distance then
-                    if Enemy ~= Player.Character then
-                        table.insert(OthersEnemies, { Enemy, Head })
-                        BasePart = Head
-                    end
+    function AttackModule:ProcessAll()
+        local target
+        local args = {}
+
+        for _, enemy in ipairs(Enemies:GetChildren()) do
+            local hrp = enemy:FindFirstChild("HumanoidRootPart")
+
+            if hrp and client:DistanceFromCharacter(hrp.Position) < self.Distance then
+                if not target then
+                    target = hrp
+                else
+                    table.insert(args, { enemy, hrp })
                 end
             end
-            return BasePart
         end
 
-        function FastAttack:Attack(BasePart, OthersEnemies)
-            if not BasePart or #OthersEnemies == 0 then return end
-            RegisterAttack:FireServer(Settings.ClickDelay or 0)
-            RegisterHit:FireServer(BasePart, OthersEnemies)
-        end
-
-        function FastAttack:AttackNearest()
-            local OthersEnemies = {}
-            local Part1 = ProcessEnemies(OthersEnemies, Enemies)
-            local Part2 = ProcessEnemies(OthersEnemies, Characters)
-
-            local character = Player.Character
-            if not character then return end
-            local equippedWeapon = character:FindFirstChildOfClass("Tool")
-
-            if equippedWeapon and equippedWeapon:FindFirstChild("LeftClickRemote") then
-                for _, enemyData in ipairs(OthersEnemies) do
-                    local enemy = enemyData[1]
-                    local direction = (enemy.HumanoidRootPart.Position - character:GetPivot().Position).Unit
-                    pcall(function()
-                        equippedWeapon.LeftClickRemote:FireServer(direction, 1)
-                    end)
-                end
-            elseif #OthersEnemies > 0 then
-                self:Attack(Part1 or Part2, OthersEnemies)
+        if target then
+            if HIT_FUNCTION then
+                HIT_FUNCTION(target, args)
             else
-                task.wait(0)
+                RegisterHit:FireServer(target, args)
             end
+
+            RegisterAttack:FireServer(0)
         end
+    end
 
-        function FastAttack:BladeHits()
-            local Equipped = IsAlive(Player.Character) and Player.Character:FindFirstChildOfClass("Tool")
-            if Equipped and Equipped.ToolTip ~= "Gun" then
-                self:AttackNearest()
-            else
-                task.wait(0)
-            end
+    task.spawn(function()
+        while task.wait() do
+            AttackModule:ProcessAll()
         end
+    end)
 
-        task.spawn(function()
-            while task.wait(Settings.ClickDelay) do
-                if Settings.AutoClick then
-                    FastAttack:BladeHits()
-                end
-            end
-        end)
+    AttackModule:InitHitFunction()
 
-        _ENV.rz_FastAttack = FastAttack
-        return FastAttack
-    end)()
 end
    
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -11644,74 +11628,3 @@ end)
             end
          end)
      end)
-
-local client = game.Players.LocalPlayer
-local Enemies = workspace:WaitForChild("Enemies")
-local Modules = game.ReplicatedStorage:WaitForChild("Modules")
-
-FastAttack = (function()
-
-    local net = Modules:WaitForChild("Net")
-    local RegisterAttack = net:WaitForChild("RE/RegisterAttack")
-    local RegisterHit = net:WaitForChild("RE/RegisterHit")
-
-    local HIT_FUNCTION
-
-    local AttackModule = {
-        Distance = 100,
-    }
-
-    local u147 = client.Character
-        and client.Character:FindFirstChildOfClass("Tool")
-
-    function AttackModule:InitHitFunction()
-        local PlayerScripts = client:WaitForChild("PlayerScripts")
-        local LocalScript = PlayerScripts:FindFirstChildOfClass("LocalScript")
-
-        while not LocalScript do
-            client.PlayerScripts.ChildAdded:Wait()
-            LocalScript = PlayerScripts:FindFirstChildOfClass("LocalScript")
-        end
-
-        local Success, ScriptEnv = pcall(getsenv, LocalScript)
-        if Success and ScriptEnv then
-            HIT_FUNCTION = ScriptEnv._G.SendHitsToServer
-        end
-    end
-
-    function AttackModule:ProcessAll()
-        local target
-        local args = {}
-
-        for _, enemy in ipairs(Enemies:GetChildren()) do
-            local hrp = enemy:FindFirstChild("HumanoidRootPart")
-
-            if hrp and client:DistanceFromCharacter(hrp.Position) < self.Distance then
-                if not target then
-                    target = hrp
-                else
-                    table.insert(args, { enemy, hrp })
-                end
-            end
-        end
-
-        if target then
-            if HIT_FUNCTION then
-                HIT_FUNCTION(target, args)
-            else
-                RegisterHit:FireServer(target, args)
-            end
-
-            RegisterAttack:FireServer(0)
-        end
-    end
-
-    task.spawn(function()
-        while task.wait() do
-            AttackModule:ProcessAll()
-        end
-    end)
-
-    AttackModule:InitHitFunction()
-
-end
