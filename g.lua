@@ -1,7 +1,3 @@
-
-
-
-
 local MatsuneA1 = {};
 
 MatsuneA1["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
@@ -204,7 +200,8 @@ FastAttack = (function()
 
     AttackModule:InitHitFunction()
 
-end
+end)()
+
    
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -11628,3 +11625,4 @@ end)
             end
          end)
      end)
+     
