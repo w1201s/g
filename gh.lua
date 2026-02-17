@@ -58,7 +58,7 @@ Workspace.FieldDecos:Destroy()
 Workspace.HiveDeco.BackPillars:Destroy()
 Workspace.Map.Part:Destroy()
 
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/jensonhirst/Orion/main/source')))()
 
 local Window = OrionLib:MakeWindow({
     Name = "☄Space Hub",
