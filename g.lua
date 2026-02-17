@@ -21,43 +21,6 @@ local togglestore = {
     CollectHiddenStickers = false
 }
 
-local discordinvite = "discord.gg/BVAnKkZm5A"
-
-local functionstore = {
-    ClaimHive = function()
-        for _, v in Workspace.Honeycombs:GetChildren() do
-            if v.Owner.Value ~= nil then continue end
-            eventstore.ClaimHive:FireServer(v.HiveID.Value)
-        end
-    end,
-}
-local functionstore = {
-    ClaimHive = function()
-        for _, v in Workspace.Honeycombs:GetChildren() do
-            if v.Owner.Value ~= nil then continue end
-            eventstore.ClaimHive:FireServer(v.HiveID.Value)
-        end
-    end,
-}
-
-functionstore.ClaimHive()
-
-Workspace.Toys["Field Booster"]["Boost Pod"].Union:Destroy()
-Workspace.Map.Fences:Destroy()
-Workspace.Toys["Instant Converter"].Machine:Destroy()
-Workspace.Map.Ground.RedClubhouse:Destroy()
-Workspace["Invisible Walls"]:Destroy()
-Workspace.Map.Ground.StickerPrinterGround:Destroy()
-Workspace.Decorations.JumpGames.RockClimbBamboo:Destroy()
-Workspace.Toys["Moon Amulet Generator"]:Destroy()
-Workspace.Decorations.TreatBooth:Destroy()
-Workspace.RetroEvent:Destroy()
-Workspace.Decorations.Misc["Blue Flower 4"]:Destroy()
-Workspace.Honey:Destroy()
-Workspace.FieldDecos:Destroy()
-Workspace.HiveDeco.BackPillars:Destroy()
-Workspace.Map.Part:Destroy()
-
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/jensonhirst/Orion/main/source')))()
 
 local Window = OrionLib:MakeWindow({
