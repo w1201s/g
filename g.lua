@@ -1,38 +1,3 @@
--- ts file was generated at discord.gg/25ms
-
-repeat
-    task.wait(0.1)
-until game:IsLoaded()
-
-game.Players.LocalPlayer.PlayerGui.ScreenGui.ServerMessage.Visible = true
-game.Players.LocalPlayer.PlayerGui.ScreenGui.ServerMessage.TextBox.Text = 'Thank For Using Beecon Hub \n Top #1 Bee Swarm Simulator Script'
-
-local _MarketplaceService = game:GetService('MarketplaceService')
-local v2, v3 = pcall(_MarketplaceService.GetProductInfo, _MarketplaceService, game.PlaceId)
-local v4 = not (v2 and v3) and 'Unknown Game' or v3.Name
-local v5 = loadstring(game:HttpGet('https://raw.githubusercontent.com/MaGiXxScripter0/keysystemv2api/master/ui/xrer_mstudio45.lua'))()
-
-v5.New({
-    ApplicationName = 'BaconBossScript',
-    Name = 'BaconBossScript',
-    Info = v4,
-    DiscordInvite = 'https://discord.gg/baconbossscript',
-    AuthType = 'ip',
-})
-
-repeat
-    task.wait()
-until v5.Finished() or v5.Closed
-
-if v5.Finished() and v5.Closed == false then
-    if game.PlaceId ~= 15579077077 then
-        if game.PlaceId == 1537690962 then
-            pcall(function()
-                getgenv().key = 162
-
-                loadstring(game:HttpGet('https://pastefy.app/1lve7ZVH/raw', true))()
-                wait(0.2)
-            end)
 
             local u6 = loadstring(game:HttpGet('https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua'))()
             local v7 = loadstring(game:HttpGet('https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua'))()
